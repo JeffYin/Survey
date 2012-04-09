@@ -1,0 +1,28 @@
+Survey(Seng):
+ title: about Seng Song
+
+Survey(Wong):
+ title: about C.K. Wong
+   
+QuestionType(check):
+ name: check
+ 
+QuestionType(text):
+ name: text
+
+Question(faith):
+ survey: [Seng]
+ type: [check]
+ title: how is his faith?
+ 
+QuestionOptional(8 score):
+ question: [faith]
+ title: 8 score
+ 
+QuestionOptional(9 score):
+ question: [faith]
+ title: 9 score
+ 
+ 
+ 
+ 
