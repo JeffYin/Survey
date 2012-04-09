@@ -6,14 +6,16 @@
     <h2 id="crudBlankTitle">&{'crud.blank.title', type.modelName}</h2>
 
     <div class="objectForm">
-    #{form action:@loadQuestions(), enctype:'multipart/form-data'}
-          Name: <input type = 'text' name = 'survee' /> <br>
+    #{form action:@saveAnswers(), enctype:'multipart/form-data'}
+          Survey: ${survey.title}, Id: ${survey.id} <br>
+          Name: ${survee} <br>
+          
+          <input type="hidden" name="surveyId" value="${survey.id}">
+          <input type="hidden" name="survee" value="${survee}">
     
-           <select name = "surveyId" >
-		        #{list items:surveys, as:'survey' }
-        	      <option value=${survey.id}>${survey.title}</option>
-        		#{/list}
-           </select>
+        #{list items:questions, as:'question'}
+      	      ${question.title}<br>
+      	#{/list}
         
         
         <p class="crudButtons">

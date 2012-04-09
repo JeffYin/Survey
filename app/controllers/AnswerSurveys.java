@@ -20,11 +20,12 @@ public class AnswerSurveys extends CRUD {
    * Load all questions belongs to the serveyId
    * @param surverId
    */
-  public static void loadQuestions(Long surveyId) {
-	  
+  public static void loadQuestions(Long surveyId, String survee) {
 	  System.out.println("surveyId = "+surveyId);
+      Survey survey = Survey.findById(surveyId);
+      
 	  List<Question> questions = Question.find("select q from Survey s join s.questions q where s.id = ?", surveyId).fetch();
-	  
 	  System.out.println(questions);
+	  render(survey,survee,questions);
   }
 }

@@ -16,6 +16,6 @@ public class Survey extends Model {
    public String title;
    public Date date;
    
-   @ManyToMany
+   @ManyToMany(mappedBy = "surveys")
    public List<Question> questions;
 }
