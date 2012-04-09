@@ -1,0 +1,23 @@
+#{extends 'CRUD/layout.html' /}
+#{set title:messages.get('crud.blank.title', type.modelName) /}
+
+<div id="crudBlank" class="${type.name}">
+
+    <h2 id="crudBlankTitle">&{'crud.blank.title', type.modelName}</h2>
+
+    <div class="objectForm">
+    #{form action:@loadQuestions(), enctype:'multipart/form-data'}
+           <select name = "surveyId" >
+		        #{list items:surveys, as:'survey' }
+        	      <option value=${survey.id}>${survey.title}</option>
+        		#{/list}
+           </select>
+        
+        
+        <p class="crudButtons">
+            <input type="submit" name="_saveAndContinue" value="&{'crud.saveAndContinue', type.modelName}" />
+        </p>
+    #{/form}
+    </div>
+
+</div>
