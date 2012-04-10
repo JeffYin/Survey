@@ -6,10 +6,4 @@ import javax.persistence.Entity;
 public class AnswerText extends Answer {
    public String text;
 
-@Override
-public String getAnswer() {
-	return text;
-} 
-   
-   
 }

@@ -6,7 +6,7 @@
     <h2 id="crudBlankTitle">&{'crud.blank.title', type.modelName}</h2>
 
     <div class="objectForm">
-    #{form action:@saveAnswers(), enctype:'multipart/form-data'}
+    #{form action:@saveAnswers()}
           Survey: ${survey.title}, Id: ${survey.id} <br>
           Name: ${survee} <br>
           
@@ -15,14 +15,19 @@
     
         #{list items:questions, as:'question'}
       	      ${question.title}<br>
-      	      #{if "check" == question.type.name }
       	      #{list items:question.optionals, as:'qo'}
-      	         <input type="checkbox" value="${qo.title}">${qo.title} <br>
+	      	      #{if "check" == question.type.name }
+	      	         <input type="checkbox" name="answers[${qo_index}].title" value="${qo.title}">${qo.title} <br>
+	      	      #{/if}
+	      	      #{elseif "text" == question.type.name}
+	      	          <input type='text' name="answers[${qo_index}].title" />
+	      	      #{/elseif}
+	      	      #{elseif "radio" == question.type.name}
+	      	          <input type="radio" name="answers[${qo_index}].title" value="${qo.title}">${qo.title} <br>
+	      	      #{/elseif}
+	      	           <input type="hidden" name="answers[${qo_index}].question.id" value="${qo.id}" >
       	      #{/list}
-      	      #{/if}
-      	      #{elseif "text" == question.type.name}
-      	          <input type='text' />
-      	      #{/elseif}
+      	      
       	#{/list}
         
         

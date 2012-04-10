@@ -8,10 +8,6 @@ public class AnswerCheck extends Answer{
 	@ManyToOne
    public QuestionOptional optional;
 
-	@Override
-	public String getAnswer() {
-		return optional.title;
-	}
 	
 	
 }

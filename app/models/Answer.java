@@ -7,7 +7,7 @@ import play.db.jpa.Model;
 
 
 @Entity
-public abstract class Answer extends Model{
+public class Answer extends Model{
  
   @ManyToOne	
   public Survey survey;
@@ -17,6 +17,8 @@ public abstract class Answer extends Model{
   
   public String survee;
   
-  public abstract String getAnswer();  
+  public String title;
+  
+//  public String getAnswer();  
   
 }
