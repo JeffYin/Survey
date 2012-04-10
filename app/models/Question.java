@@ -23,6 +23,8 @@ public class Question extends Model {
   @ManyToOne
   public QuestionType type;
   
+  public String bulletNo;
+  
   public String title; 
   
 }

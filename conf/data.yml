@@ -4,15 +4,17 @@ Survey(Seng):
 Survey(Wong):
  title: about C.K. Wong
    
-QuestionType(check):
- name: check
+# Question Type List   
+QuestionType(radio):
+ name: radio
  
 QuestionType(text):
  name: text
 
+
 Question(faith):
  survey: [Seng]
- type: [check]
+ type: [radio]
  title: how is his faith?
  
 QuestionOptional(8 score):

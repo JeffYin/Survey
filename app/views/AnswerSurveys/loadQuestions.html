@@ -17,15 +17,15 @@
       	      ${question.title}<br>
       	      #{list items:question.optionals, as:'qo'}
 	      	      #{if "check" == question.type.name }
-	      	         <input type="checkbox" name="answers[${qo_index}].title" value="${qo.title}">${qo.title} <br>
+	      	         <input type="checkbox" name="answers[${question_index-1}].title" value="${qo.title}">${qo.title} <br>
 	      	      #{/if}
 	      	      #{elseif "text" == question.type.name}
-	      	          <input type='text' name="answers[${qo_index}].title" />
+	      	          <input type='text' name="answers[${question_index-1}].title" />
 	      	      #{/elseif}
 	      	      #{elseif "radio" == question.type.name}
-	      	          <input type="radio" name="answers[${qo_index}].title" value="${qo.title}">${qo.title} <br>
+	      	          <input type="radio" name="answers[${question_index-1}].title" value="${qo.title}">${qo.title} <br>
 	      	      #{/elseif}
-	      	           <input type="hidden" name="answers[${qo_index}].question.id" value="${qo.id}" >
+	      	           <input type="hidden" name="questionIds[${qo_index-1}]" value="${question.id}" >
       	      #{/list}
       	      
       	#{/list}

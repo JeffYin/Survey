@@ -1,9 +1,6 @@
 package controllers;
 
-import groovy.util.MapEntry;
-
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +11,8 @@ import models.QuestionOptional;
 import models.Survey;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
-import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.ListUtils;
+
+import utils.RequestParameterHolder;
 
 public class AnswerSurveys extends CRUD {
  public static void list() {
@@ -44,31 +41,28 @@ public class AnswerSurveys extends CRUD {
   }
   
   public static void saveAnswers(Long surveyId, String survee) throws IllegalAccessException, InvocationTargetException {
-	 
-	  List<Answer> answers =  ListUtils.lazyList(
-			  new ArrayList<Answer>(),
-			  new Factory() {
-				  public Object create() {
-						return new Answer();
-					}
-			  }
-		);
-	  
-	  Map<String,String> getObjectMap = getObjectMap("answers\\[\\d{1,2}\\]\\..*");
-	  
-	  BeanUtilsBean.getInstance().populate(answers, getObjectMap);
+	 List<Answer> answers = getAnswersFromRequest();
+	 Survey survey = Survey.findById(surveyId);
 	  for (Answer answer:answers) {
 		  answer.survee = survee;
-		  answer.survey.id = surveyId;
+		  answer.survey = survey;
 		  
 		  answer.save();
 	  }
 	  
-	  System.out.println(answers);
+	  //Clear the answers since it was created in a static method. 
+	  answers = null;
+	  
   }
   
-  public static Map<String,String> getObjectMap(String namePattern) {
+  public static List<Answer> getAnswersFromRequest() {
+	  /*
+	  String namePattern = "answers\\[\\d{1,3}\\]\\..*";
+
+	  //	  Pattern answerPattern = Pattern.compile(namePattern);
+	  
 	  Map<String,String> objMap = new HashMap<String, String>();
+	  
 	  
 	  for (Map.Entry<String, String> entry: params.allSimple().entrySet()) {
 		   String key = entry.getKey();
@@ -76,8 +70,30 @@ public class AnswerSurveys extends CRUD {
 			   objMap.put(key, entry.getValue());
 		   }
 	  }
+	  */
 	  
-	  return objMap;
+	  RequestParameterHolder paHoParameterHolder = new RequestParameterHolder();
+	  try {
+		BeanUtilsBean.getInstance().populate(paHoParameterHolder,  params.allSimple());
+	} catch (IllegalAccessException e) {
+		e.printStackTrace();
+	} catch (InvocationTargetException e) {
+		e.printStackTrace();
+	}
+	  
+	  
+	  List<Answer> answers = paHoParameterHolder.getAnswers();
+	  List<String>questionIds = paHoParameterHolder.getQuestionIds();
+	  
+	  for (int i=0; i<answers.size() && i<questionIds.size(); i++) {
+		  Long questionId = Long.parseLong(questionIds.get(i));
+		  
+		  Question question = Question.findById(questionId);
+		  
+		  answers.get(i).question = question;
+	  }
+	  
+	  return answers; 
   }
   
 }
