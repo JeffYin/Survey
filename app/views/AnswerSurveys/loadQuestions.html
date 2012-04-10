@@ -15,6 +15,14 @@
     
         #{list items:questions, as:'question'}
       	      ${question.title}<br>
+      	      #{if "check" == question.type.name }
+      	      #{list items:question.optionals, as:'qo'}
+      	         <input type="checkbox" value="${qo.title}">${qo.title} <br>
+      	      #{/list}
+      	      #{/if}
+      	      #{elseif "text" == question.type.name}
+      	          <input type='text' />
+      	      #{/elseif}
       	#{/list}
         
         
