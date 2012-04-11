@@ -1,6 +1,16 @@
 #{extends 'CRUD/layout.html' /}
 #{set title:messages.get('crud.blank.title', type.modelName) /}
 
+#{ifErrors}
+ 
+   <h1>Oops...</h1>
+ 
+   #{errors}
+       <li>${error}</li>
+   #{/errors}
+ 
+#{/ifErrors}
+#{else}
 <div id="crudBlank" class="${type.name}">
 
     <h2 id="crudBlankTitle">&{'crud.blank.title', type.modelName}</h2>
@@ -23,3 +33,4 @@
     </div>
 
 </div>
+#{/else}

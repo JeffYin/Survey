@@ -17,7 +17,7 @@ public class Question extends Model {
   public List<Survey> surveys;
   
   
-  @OneToMany(mappedBy="question")
+  @ManyToMany(mappedBy="questions")
   public List<QuestionOptional> optionals;
   
   @ManyToOne

@@ -14,20 +14,24 @@
           <input type="hidden" name="survee" value="${survee}">
     
         #{list items:questions, as:'question'}
-      	      ${question.title}<br>
-      	      #{list items:question.optionals, as:'qo'}
-	      	      #{if "check" == question.type.name }
-	      	         <input type="checkbox" name="answers[${question_index-1}].title" value="${qo.title}">${qo.title} <br>
-	      	      #{/if}
-	      	      #{elseif "text" == question.type.name}
-	      	          <input type='text' name="answers[${question_index-1}].title" />
-	      	      #{/elseif}
-	      	      #{elseif "radio" == question.type.name}
-	      	          <input type="radio" name="answers[${question_index-1}].title" value="${qo.title}">${qo.title} <br>
-	      	      #{/elseif}
-	      	           <input type="hidden" name="questionIds[${qo_index-1}]" value="${question.id}" >
-      	      #{/list}
+      	      ${question.bulletNo}  ${question.title}<br>
       	      
+      	      #{if "text" == question.type.name } 
+      	         <textarea rows=3 cols=120 name="answers[${question_index-1}].title" ></textarea>
+      	      #{/if}
+      	      #{else}
+      	          #{list items:question.optionals, as:'qo'}
+		      	      #{if "check" == question.type.name }
+		      	         <input type="checkbox" name="answers[${question_index-1}].title" value="${qo.title}">${qo.title} <br>
+		      	      #{/if}
+		      	      #{elseif "radio" == question.type.name}
+		      	          <input type="radio" name="answers[${question_index-1}].title" value="${qo.title}">${qo.title} <br>
+		      	      #{/elseif}
+		      	   #{/list}   
+      	      #{/else}
+	      	  <input type="hidden" name="questionIds[${question_index-1}]" value="${question.id}" >
+	      	    <br>
+	      	    <br>       
       	#{/list}
         
         

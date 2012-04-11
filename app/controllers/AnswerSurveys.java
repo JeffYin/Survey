@@ -11,6 +11,7 @@ import models.QuestionOptional;
 import models.Survey;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
+import org.apache.commons.lang.StringUtils;
 
 import utils.RequestParameterHolder;
 
@@ -30,11 +31,18 @@ public class AnswerSurveys extends CRUD {
    * @param surverId
    */
   public static void loadQuestions(Long surveyId, String survee) {
+	  validation.required(survee);
+	  validation.required(surveyId);
+	  if(validation.hasErrors()) {
+          params.flash(); // add http parameters to the flash scope
+          validation.keep(); // keep the errors for the next request
+          selectSurvey();
+      }
       Survey survey = Survey.findById(surveyId);
 	  List<Question> questions = Question.find("select q from Survey s join s.questions q where s.id = ?", surveyId).fetch();
 	  //load options
 	  for (Question question:questions) {
-		  List<QuestionOptional> optionals = QuestionOptional.find("question = ?", question).fetch();
+		  List<QuestionOptional> optionals = QuestionOptional.find("select o from Question q join q.optionals o where q = ?", question).fetch();
 		  question.optionals = optionals;
 	  }
 	  render(survey,survee,questions);

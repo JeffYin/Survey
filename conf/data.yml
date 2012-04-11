@@ -3,7 +3,8 @@ Survey(Seng):
 
 Survey(Wong):
  title: about C.K. Wong
-   
+ 
+#-------------------------------------------------------------  
 # Question Type List   
 QuestionType(radio):
  name: radio
@@ -11,19 +12,154 @@ QuestionType(radio):
 QuestionType(text):
  name: text
 
-
-Question(faith):
- survey: [Seng]
+#-------------------------------------------------------------  
+Question(1a):
  type: [radio]
- title: how is his faith?
+ bulletNo: 1.a
+ title: Faith 信心
+
+Question(1b):
+ type: [radio]
+ bulletNo: 1.b
+ title: Speech 言语 
+
+Question(1c):
+ type: [radio]
+ bulletNo: 1.c
+ title: Work 行为 
+
+Question(1d):
+ type: [radio]
+ bulletNo: 1.d
+ title: Love 爱心 
+
+Question(1e):
+ type: [radio]
+ bulletNo: 1.e
+ title: Purity 清洁 
  
+Question(2a):
+ type: [radio]
+ bulletNo: 2.a
+ title: Correctly interpreted the Bible正确解释圣经
+ 
+Question(2b):
+ type: [radio]
+ bulletNo: 2.b
+ title: Urging one to repent or make life change 感人悔改和愿意生命改变
+ 
+Question(2c):
+ type: [radio]
+ bulletNo: 2.c
+ title: Inspiring to love the word of God 引发人爱慕圣经话语
+ 
+Question(2d):
+ type: [radio]
+ bulletNo: 2.d
+ title: Vivid expression, language, gesture, tone 表达的语言，动作和音调 
+ 
+Question(2e):
+ type: [radio]
+ bulletNo: 2.e
+ title: Thoughtful reflection and life application 思考深度和生活应用
+ 
+Question(3a):
+ type: [radio]
+ bulletNo: 3.a
+ title: How well his teachings help you correctly understanding the Bible? 他的教导对你正确明白圣经有多大的帮助？
+ 
+Question(3b):
+ type: [text]
+ bulletNo: 3.b
+ title: If not, what would you suggest him to improve? 若是没有，有什么建议他去改进？
+ 
+Question(3c):
+ type: [text]
+ bulletNo: 3.c
+ title: In what class he taught you have participated? 你曾听过他教的什么课题？
+ 
+Question(4a):
+ type: [radio]
+ bulletNo: 4.a
+ title: How well his teachings equip you in serving the ministry? 他的教导对装备你去服事有多大的帮助？
+ 
+Question(4b):
+ type: [text]
+ bulletNo: 4.b
+ title: If not, what would you suggest him to improve?  若是没有，有什么建议去改进？
+ 
+Question(4c):
+ type: [text]
+ bulletNo: 4.c
+ title: In what training workshops you have participated? 你曾参与过他那些训练课程？
+  
+Question(5):
+ type: [radio]
+ bulletNo: 5
+ title: Could his visitation help strengthening your faith and consoling your spirit? 他的探访能坚定你信心和安慰心灵？
+
+Question(6):
+ type: [radio]
+ bulletNo: 6
+ title: Could his counselling help understanding deeper and more the will of God? 他的辅导能使你对神心意有更清楚的认识吗？
+  
+Question(7):
+ type: [radio]
+ bulletNo: 7
+ title: Are you satisfied with his leading style in the board meeting if he undertakes the leadership role? 若担任理事会领导角色，你满意他在理事会领导的方式吗？ 
+  
+Question(8a):
+ type: [text]
+ bulletNo: 8.a
+ title: What vision and passion does he share with you in the ministry? 牧者和你分享了什么事工的异象和负担？
+ 
+Question(8b):
+ type: [radio]
+ bulletNo: 8.b
+ title: Do you agree with his vision and passion? 你同意他的异象和负担？
+ 
+Question(8c):
+ type: [text]
+ bulletNo: 8.c
+ title: If not, please address the reasons 不同意的，请说明你的理由。
+
+Question(9):
+ type: [radio]
+ bulletNo: 9
+ title: Are you satisfied with his action matching? 你对他配合异象和负担的行动满意吗？
+  
+Question(10a):
+ type: [text]
+ bulletNo: 10.a
+ title: What are his gifts and strength in characteristics? 他的恩赐是什么和性格上长处在哪里？
+ 
+Question(10b):
+ type: [text]
+ bulletNo: 10.b
+ title: weakness?他的缺乏和弱点在哪里？
+ 
+#--------------------------------------------------------------------- 
+# question optionals 
+QuestionOptional(7 score):
+ title: 7 score
+
 QuestionOptional(8 score):
- question: [faith]
  title: 8 score
  
 QuestionOptional(9 score):
- question: [faith]
  title: 9 score
+ 
+QuestionOptional(10 score):
+ title: 10 score
+ 
+QuestionOptional(NA score):
+ title: NA
+ 
+QuestionOptional(Yes):
+ title: Yes
+
+QuestionOptional(No):
+ title: No
  
  
  
