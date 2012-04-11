@@ -1,10 +1,16 @@
 package controllers;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
 
 import models.Answer;
 import models.Question;
@@ -26,8 +32,12 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.jfree.util.Rotation;
 
+import play.mvc.Http.Response;
+
 public class Surveys extends CRUD{
 	public static final String CharTargetFolder =  "c:/temp/png/";
+	public static final Integer ImageWidth = 300;
+	public static final Integer ImageHeight = 300;
 	//*
   public static void save(String id) throws Exception {
 	  if (StringUtils.isNotBlank(params.get("_createSummary"))) {
@@ -37,49 +47,103 @@ public class Surveys extends CRUD{
 	  }
   }
   
+  /**
+   * 
+   * @param id the survey id. 
+   */
   public static void createSummary(String id) {
 	  Survey survey = Survey.findById(Long.parseLong(id));
 	  List<Question> questions = survey.questions;
 	  
+	  render("AnswerSurveys/displaySummary.html", survey, questions);
+	  /*
 	  for (Question question:questions) {
 		 drawPIChart(survey, question);
 		 drawBarChart(survey, question);
 	  }
+	  //*/
+  }
+ 
+  public static void drawPIChart(Long surveyId, Long questionId) {
+	  Survey survey = Survey.findById(surveyId);
+	  Question question = Question.findById(questionId);
+	  BufferedImage piImage = drawPIChart(survey, question);
+	  try {
+		outputImage(piImage);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+  }
+
+  public static void drawBarChart(Long surveyId, Long questionId) {
+	  Survey survey = Survey.findById(surveyId);
+	  Question question = Question.findById(questionId);
+	  BufferedImage barImage = drawBarChart(survey, question);
+	  try {
+			outputImage(barImage);
+		} catch (IOException e) {
+			e.printStackTrace();
+	}
   }
   
+  /**
+   * Output the image.
+   * @param imgage
+ * @throws IOException 
+   */
+  private static void outputImage(BufferedImage image) throws IOException {
+	  ImageInputStream is = ImageIO.createImageInputStream(image);
+	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    ImageIO.write(image, "png", baos);
+	    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+	    Response.current().contentType = "image/png";
+
+	    renderBinary(bais);
+  }
   
-  private static void drawPIChart(Survey survey, Question question) {
+  private static BufferedImage drawPIChart(Survey survey, Question question) {
 	  // create a dataset...
       final PieDataset dataset = createPIDataset(survey, question);
       String title = question.title;
       // create the chart...
       final JFreeChart chart = createPIChart(dataset, title);
+      BufferedImage bufferedImage = chart.createBufferedImage(ImageWidth, ImageHeight);
       
       final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
       String piChartName = new StringBuilder(CharTargetFolder).append(question.bulletNo).append(".PI.png").toString();
       final File file1 = new File(piChartName);
       try {
 		ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+      
+      return bufferedImage;
   }
   
-  private static void drawBarChart(Survey survey, Question question) {
+ 
+	  
+ 
+  private static BufferedImage drawBarChart(Survey survey, Question question) {
 	  // create a dataset...
 	  final CategoryDataset dataset = createBarDataset(survey, question);
 	  String title = question.title;
 	  // create the chart...
 	  final JFreeChart chart = createBarChart(dataset, title);
+	  BufferedImage bufferedImage = chart.createBufferedImage(ImageWidth, ImageHeight);
 	  
 	  final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
 	  String barChartName = new StringBuilder(CharTargetFolder).append(question.bulletNo).append(".Bar.png").toString();
 	  final File file1 = new File(barChartName);
 	  try {
 		  ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
+		  
 	  } catch (IOException e) {
 		  e.printStackTrace();
 	  }
+	  
+	  return bufferedImage;
+	  
   }
   /**
    * Creates a PI dataset for the chart.
@@ -185,6 +249,7 @@ public class Surveys extends CRUD{
 	  
 	  plot.setForegroundAlpha(0.5f);
 	  plot.setNoDataMessage("No data to display");
+	  
 	  return chart;
 	  
   }

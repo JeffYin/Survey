@@ -1,0 +1,26 @@
+#{extends 'CRUD/layout.html' /}
+#{set title:messages.get('crud.blank.title', type.modelName) /}
+
+<div id="crudBlank" class="${type.name}">
+
+    <h2 id="crudBlankTitle">&{'crud.blank.title', type.modelName}</h2>
+
+    <div class="objectForm">
+    #{form action:@list()}
+          Survey: ${survey.title}, Id: ${survey.id} <br>
+          
+          <input type="hidden" name="surveyId" value="${survey.id}">
+    
+        #{list items:questions, as:'question'}
+      	      ${question.bulletNo}  ${question.title}<br>
+      	     <img src="@{Surveys.drawBarChart(survey.id, question.id)}">
+      	     <img src="@{Surveys.drawPIChart(survey.id, question.id)}">
+	      	    
+	        <br>
+	      	<br>       
+      	#{/list}
+        
+    #{/form}
+    </div>
+
+</div>

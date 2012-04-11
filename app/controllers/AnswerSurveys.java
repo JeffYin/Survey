@@ -64,13 +64,16 @@ public class AnswerSurveys extends CRUD {
 //	  createSummary(survey);
   }
   
-  
-  //Generate Summary 
-  public static void createSummary(Survey survey) {
-	  List<Answer> answers = Answer.find("survey = ?", survey).fetch();
-	  List<Question> questions = survey.questions;
+  /**
+   * display the summary of the survey summary. 
+   * @param id The survey id. 
+   */
+  public static void displaySummary(String id) {
+	  Long surveyId = Long.parseLong(id);
+	  Survey survey = Survey.findById(surveyId);
+	  List<Question> questions = Question.find("select q from Survey s join s.questions q where s.id = ?", surveyId).fetch();
 	  
-	  System.out.println(questions);
+	  render(survey,questions);
   }
   
   
