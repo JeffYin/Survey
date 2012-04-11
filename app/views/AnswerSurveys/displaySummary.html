@@ -12,10 +12,25 @@
           <input type="hidden" name="surveyId" value="${survey.id}">
     
         #{list items:questions, as:'question'}
-      	      ${question.bulletNo}  ${question.title}<br>
+      	    ${question.bulletNo}  ${question.title}<br>
+      	    #{if question.answerOutputFormat.name=='chart'}  
       	     <img src="@{Surveys.drawBarChart(survey.id, question.id)}">
       	     <img src="@{Surveys.drawPIChart(survey.id, question.id)}">
-	      	    
+	      	#{/if}
+	      	#{elseif question.answerOutputFormat.name=='text'}
+	      	  <div id="labelForQuestion${question.id}"></div>
+	      	  <script type="text/javascript">
+	      	  	   $("#labelForQuestion${question.id}").text("Jeff");
+	      	  	   
+				   var listAction = #{jsAction @Surveys.getTextAnswers(':surveyId', ':questionId') /}
+				   $('#labelForQuestion${question.id}').load(
+				       listAction({surveyId:'${survey.id}', questionId:'${question.id}'}, ), 
+				       function() {
+				           $('#labelForQuestion${question.id}').val("lalalal");
+				       }
+				   )
+				</script>
+	      	#{/elseif} 
 	        <br>
 	      	<br>       
       	#{/list}

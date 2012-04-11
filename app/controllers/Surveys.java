@@ -63,6 +63,18 @@ public class Surveys extends CRUD{
 	  }
 	  //*/
   }
+  
+  public static String getTextAnswers(Long surveyId, Long questionId) {
+	  List<Answer> answers = Answer.find("survey.id = ? and question.id = ? ", surveyId, questionId).fetch();
+	  StringBuilder info = new StringBuilder();
+	  
+	  for (Answer answer: answers) {
+		  String title = answer.title;
+		  info.append(title).append("; ");
+	  }
+	  
+	  return info.toString();
+  }
  
   public static void drawPIChart(Long surveyId, Long questionId) {
 	  Survey survey = Survey.findById(surveyId);

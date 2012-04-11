@@ -26,11 +26,18 @@ public class Bootstrap extends Job {
 		List<Survey> surveys = Survey.findAll();
 		List<Question>questions = Question.findAll();
 		List<QuestionOptional> questionOptionals = QuestionOptional.find("title !=? and title !=? ", "Yes","No").fetch();
-		List<AnswerOutputFormat> answerOutputFormats = AnswerOutputFormat.findAll();
+		AnswerOutputFormat textOutputFormat = (AnswerOutputFormat) AnswerOutputFormat.find("name = ?", "text").fetch().get(0);
+		AnswerOutputFormat chartOutputFormat = (AnswerOutputFormat) AnswerOutputFormat.find("name = ?", "chart").fetch().get(0);
+		
 		
 		for (Question question:questions) {
 			question.surveys = surveys;
-			question.answerOutputFormats = answerOutputFormats;
+			if ("radio".equalsIgnoreCase(question.type.name)) {
+				question.answerOutputFormat = chartOutputFormat;
+			}else if ("text".equalsIgnoreCase(question.type.name)) {
+				question.answerOutputFormat = textOutputFormat;
+			}
+
 			question.save();
 		}
 		

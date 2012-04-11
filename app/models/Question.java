@@ -27,7 +27,7 @@ public class Question extends Model {
   
   public String title; 
   
-  @ManyToMany
-  public List<AnswerOutputFormat> answerOutputFormats;
+  @ManyToOne
+  public AnswerOutputFormat answerOutputFormat;
   
 }

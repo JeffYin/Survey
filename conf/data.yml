@@ -14,10 +14,10 @@ QuestionType(text):
 
 #-------------------------------------------------------------
 AnswerOutputFormat(text):
- title: text
+ name: text
 
-AnswerOutputFormat(text):
- title: chart
+AnswerOutputFormat(chart):
+ name: chart
  
 #-------------------------------------------------------------  
 Question(1a):

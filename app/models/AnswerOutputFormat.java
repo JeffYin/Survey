@@ -6,5 +6,5 @@ import play.db.jpa.Model;
 
 @Entity
 public class AnswerOutputFormat extends Model {
-   public String title; 
+   public String name; 
 }
