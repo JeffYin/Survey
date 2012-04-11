@@ -61,25 +61,20 @@ public class AnswerSurveys extends CRUD {
 	  //Clear the answers since it was created in a static method. 
 	  answers = null;
 	  
+	  createSummary(survey);
   }
   
+  
+  //Generate Summary 
+  public static void createSummary(Survey survey) {
+	  List<Answer> answers = Answer.find("survey = ?", survey).fetch();
+	  List<Question> questions = survey.questions;
+	  
+	  System.out.println(questions);
+  }
+  
+  
   public static List<Answer> getAnswersFromRequest() {
-	  /*
-	  String namePattern = "answers\\[\\d{1,3}\\]\\..*";
-
-	  //	  Pattern answerPattern = Pattern.compile(namePattern);
-	  
-	  Map<String,String> objMap = new HashMap<String, String>();
-	  
-	  
-	  for (Map.Entry<String, String> entry: params.allSimple().entrySet()) {
-		   String key = entry.getKey();
-		   if (key.matches(namePattern)) {
-			   objMap.put(key, entry.getValue());
-		   }
-	  }
-	  */
-	  
 	  RequestParameterHolder paHoParameterHolder = new RequestParameterHolder();
 	  try {
 		BeanUtilsBean.getInstance().populate(paHoParameterHolder,  params.allSimple());
