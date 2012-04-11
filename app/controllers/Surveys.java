@@ -79,23 +79,27 @@ public class Surveys extends CRUD{
   public static void drawPIChart(Long surveyId, Long questionId) {
 	  Survey survey = Survey.findById(surveyId);
 	  Question question = Question.findById(questionId);
-	  BufferedImage piImage = drawPIChart(survey, question);
-	  try {
-		outputImage(piImage);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	  if (survey!=null && question!=null) {
+		  BufferedImage piImage = drawPIChart(survey, question);
+		  try {
+			outputImage(piImage);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	  }
   }
 
   public static void drawBarChart(Long surveyId, Long questionId) {
 	  Survey survey = Survey.findById(surveyId);
 	  Question question = Question.findById(questionId);
-	  BufferedImage barImage = drawBarChart(survey, question);
-	  try {
-			outputImage(barImage);
-		} catch (IOException e) {
-			e.printStackTrace();
-	}
+	  if (survey!=null && question!=null) {
+		  BufferedImage barImage = drawBarChart(survey, question);
+		  try {
+				outputImage(barImage);
+			} catch (IOException e) {
+				e.printStackTrace();
+		}
+	  }
   }
   
   /**
@@ -168,15 +172,17 @@ public class Surveys extends CRUD{
 	  
 	  for (Answer answer: answers) {
 		  String title = answer.title;
-		  Integer voteNumber = 0;
-		  try {
-			   voteNumber = (Integer) result.getValue(title);
-		  } catch (UnknownKeyException e) {
-			   
+		  if (StringUtils.isNotBlank(title)) {
+			  Integer voteNumber = 0;
+			  try {
+				   voteNumber = (Integer) result.getValue(title);
+			  } catch (UnknownKeyException e) {
+				   
+			  }
+			   voteNumber = voteNumber + 1;
+			 
+			  result.setValue(title, voteNumber);
 		  }
-		   voteNumber = voteNumber + 1;
-		 
-		  result.setValue(title, voteNumber);
 	  }
 	 
       return result;
@@ -205,7 +211,9 @@ public class Surveys extends CRUD{
 	  final DefaultCategoryDataset result = new DefaultCategoryDataset();
 	  for (Map.Entry<String, Integer>entry: counterMap.entrySet()) {
 		String rowKey =  entry.getKey();
-		result.setValue(entry.getValue(), rowKey, question.title);
+		if (StringUtils.isNotBlank(rowKey)) {
+			result.setValue(entry.getValue(), rowKey, question.title);
+		}
 	  }
 	  
 	  return result;
