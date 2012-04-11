@@ -12,6 +12,13 @@ QuestionType(radio):
 QuestionType(text):
  name: text
 
+#-------------------------------------------------------------
+AnswerOutputFormat(text):
+ title: text
+
+AnswerOutputFormat(text):
+ title: chart
+ 
 #-------------------------------------------------------------  
 Question(1a):
  type: [radio]

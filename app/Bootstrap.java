@@ -2,6 +2,7 @@ import java.util.List;
 
 import controllers.QuestionOptionals;
 
+import models.AnswerOutputFormat;
 import models.Question;
 import models.QuestionOptional;
 import models.Survey;
@@ -25,8 +26,11 @@ public class Bootstrap extends Job {
 		List<Survey> surveys = Survey.findAll();
 		List<Question>questions = Question.findAll();
 		List<QuestionOptional> questionOptionals = QuestionOptional.find("title !=? and title !=? ", "Yes","No").fetch();
+		List<AnswerOutputFormat> answerOutputFormats = AnswerOutputFormat.findAll();
+		
 		for (Question question:questions) {
 			question.surveys = surveys;
+			question.answerOutputFormats = answerOutputFormats;
 			question.save();
 		}
 		
@@ -34,6 +38,8 @@ public class Bootstrap extends Job {
 			optional.questions = questions;
 			optional.save();
 		}
+		
+		
 		
 	}
 }

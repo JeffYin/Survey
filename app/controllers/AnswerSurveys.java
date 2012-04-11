@@ -61,7 +61,7 @@ public class AnswerSurveys extends CRUD {
 	  //Clear the answers since it was created in a static method. 
 	  answers = null;
 	  
-	  createSummary(survey);
+//	  createSummary(survey);
   }
   
   
