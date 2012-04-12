@@ -24,7 +24,7 @@
 	      	  	   
 				   var listAction = #{jsAction @Surveys.getTextAnswers(':surveyId', ':questionId') /}
 				   $('#labelForQuestion${question.id}').load(
-				       listAction({surveyId:'${survey.id}', questionId:'${question.id}'}, ), 
+				       listAction({surveyId:'${survey.id}', questionId:'${question.id}'}), 
 				       function() {
 				           $('#labelForQuestion${question.id}').val("lalalal");
 				       }

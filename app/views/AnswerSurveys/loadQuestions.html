@@ -22,10 +22,10 @@
       	      #{else}
       	          #{list items:question.optionals, as:'qo'}
 		      	      #{if "check" == question.type.name }
-		      	         <input type="checkbox" name="answers[${question_index-1}].title" value="${qo.title}">${qo.title} <br>
+		      	         <input type="checkbox" name="answers[${question_index-1}].title" value="${qo.title}">${qo.title}
 		      	      #{/if}
 		      	      #{elseif "radio" == question.type.name}
-		      	          <input type="radio" name="answers[${question_index-1}].title" value="${qo.title}">${qo.title} <br>
+		      	          <input type="radio" name="answers[${question_index-1}].title" value="${qo.title}">${qo.title}
 		      	      #{/elseif}
 		      	   #{/list}   
       	      #{/else}

@@ -163,10 +163,10 @@ QuestionOptional(NA score):
  title: NA
  
 QuestionOptional(Yes):
- title: Yes
+ title: "Yes"
 
 QuestionOptional(No):
- title: No
+ title: "No"
  
  
  

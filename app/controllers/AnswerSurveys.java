@@ -60,7 +60,8 @@ public class AnswerSurveys extends CRUD {
 	  
 	  //Clear the answers since it was created in a static method. 
 	  answers = null;
-	  AnswerSurveys.show(surveyId.toString());
+	  
+	  selectSurvey();
 //	  createSummary(survey);
   }
   
