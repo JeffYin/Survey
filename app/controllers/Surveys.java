@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +77,7 @@ public class Surveys extends CRUD{
   }
   
   public static String getTextAnswers(Long surveyId, Long questionId) {
-	  List<Answer> answers = Answer.find("survey.id = ? and question.id = ? ", surveyId, questionId).fetch();
+	  List<Answer> answers = Answer.find("survey.id = ? and question.id = ? order by title", surveyId, questionId).fetch();
 	  StringBuilder info = new StringBuilder();
 	  
 	  for (Answer answer: answers) {
@@ -86,6 +88,26 @@ public class Surveys extends CRUD{
 	  return info.toString();
   }
  
+  
+  /**
+   * Get the summary in the text format. 
+   * @param surveyId
+   * @param questionId
+   * @return
+   */
+  public static String getTextSummary(Long surveyId, Long questionId) {
+	Map<String, Integer> summaryMap = createAnswerSummary(surveyId, questionId);
+	List<String> info = new ArrayList<String>(summaryMap.size());  
+	
+	for (Map.Entry<String, Integer> entry : summaryMap.entrySet()) {
+		info.add(String.format("%s:%d votes", entry.getKey(), entry.getValue()));
+	}
+	
+	String summary = StringUtils.join(info, ",");
+	
+	return summary;
+  }
+  
   public static void drawPIChart(Long surveyId, Long questionId) {
 	  Survey survey = Survey.findById(surveyId);
 	  Question question = Question.findById(questionId);
@@ -204,23 +226,31 @@ public class Surveys extends CRUD{
 	 
       return result;
   }
-
+  
+  
+  
+  private static Map<String, Integer> createAnswerSummary(Long surveyId, Long questionId) {
+	  Survey survey = Survey.findById(surveyId);
+	  Question question = Question.findById(questionId);
+	  return createAnswerSummary(survey, question);
+  }
   private static Map<String, Integer> createAnswerSummary(Survey survey, Question question) {
 	  Map<String,Integer> result = new TreeMap<String, Integer>();
-	  
-	   List<Answer> answers = Answer.find("survey = ? and question = ? order by title", survey, question).fetch();
-		  
-	  for (Answer answer: answers) {
-		  String title = answer.title;
-		  if (StringUtils.isNotBlank(title)) {
-			  Integer voteNumber = result.get(title);
-			  if (voteNumber==null) {
-				  voteNumber = new Integer(1);
-			  } else {
-			       voteNumber = new Integer(voteNumber.intValue() + 1);
-			  }
+	  if (survey!=null && question!=null) {
+		   List<Answer> answers = Answer.find("survey = ? and question = ? order by title", survey, question).fetch();
 			  
-			  result.put(title, voteNumber);
+		  for (Answer answer: answers) {
+			  String title = answer.title;
+			  if (StringUtils.isNotBlank(title)) {
+				  Integer voteNumber = result.get(title);
+				  if (voteNumber==null) {
+					  voteNumber = new Integer(1);
+				  } else {
+				       voteNumber = new Integer(voteNumber.intValue() + 1);
+				  }
+				  
+				  result.put(title, voteNumber);
+			  }
 		  }
 	  }
 	  //*/
