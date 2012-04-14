@@ -3,7 +3,8 @@
 
 <script type="text/javascript">
 <!--
- var listAction = #{jsAction @Surveys.getTextAnswers(':surveyId', ':questionId') /}
+ var textAction = #{jsAction @Surveys.getTextAnswers(':surveyId', ':questionId') /}
+ var textSummaryAction = #{jsAction @Surveys.getTextSummary(':surveyId', ':questionId') /}
 //-->
 </script>
 
@@ -20,7 +21,13 @@
     
         #{list items:questions, as:'question'}
       	    ${question.bulletNo}  ${question.title}<br>
-      	    
+      	    <p id="textSummaryForQuestion${question.id}"></p>
+      	    <script type="text/javascript">
+				   $('#textSummaryForQuestion${question.id}').load(
+				     textSummaryAction({surveyId:'${survey.id}', questionId:'${question.id}'})
+				   )
+			</script>
+				
       	    #{if question.answerOutputFormat.name=='chart'}  
       	     <img src="@{Surveys.drawBarChart(survey.id, question.id)}">
       	     <img src="@{Surveys.drawPIChart(survey.id, question.id)}">
@@ -29,7 +36,7 @@
 	      	  <div id="labelForQuestion${question.id}"></div>
 	      	  <script type="text/javascript">
 				   $('#labelForQuestion${question.id}').load(
-				       listAction({surveyId:'${survey.id}', questionId:'${question.id}'})
+				       textAction({surveyId:'${survey.id}', questionId:'${question.id}'})
 				   )
 				</script>
 	      	#{/elseif} 

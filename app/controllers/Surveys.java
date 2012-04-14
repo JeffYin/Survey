@@ -8,6 +8,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ import models.Answer;
 import models.Question;
 import models.Survey;
 
+import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -105,7 +108,7 @@ public class Surveys extends CRUD{
 		info.add(String.format("%s:%d votes", entry.getKey(), entry.getValue()));
 	}
 	
-	String summary = StringUtils.join(info, ",");
+	String summary = StringUtils.join(info, ", &nbsp; &nbsp;");
 	
 	return summary;
   }
@@ -237,10 +240,50 @@ public class Surveys extends CRUD{
 	  return createAnswerSummary(survey, question);
   }
   private static Map<String, Integer> createAnswerSummary(Survey survey, Question question) {
-	  Map<String,Integer> result = new TreeMap<String, Integer>();
+	  Map<String,Integer> result = new ListOrderedMap();
 	  if (survey!=null && question!=null) {
-		   List<Answer> answers = Answer.find("survey = ? and question = ? order by title", survey, question).fetch();
-			  
+		   List<Answer> answers = Answer.find("survey = ? and question = ?", survey, question).fetch();
+			
+		   Collections.sort(answers, new Comparator<Answer>() {
+			@Override
+			public int compare(Answer arg0, Answer arg1) {
+				String title0 = arg0.title;
+				String title1 = arg1.title;
+				
+				String score0str = StringUtils.isBlank(title0)?"0":title0.substring(0, Math.min(2,title0.length())).trim();
+				String score1str = StringUtils.isBlank(title1)?"0":title1.substring(0, Math.min(2,title1.length())).trim();
+				
+				
+				String	score0 = score0str.length()==1?new StringBuilder("0").append(score0str).toString():score0str;
+				String	score1 = score1str.length()==1?new StringBuilder("0").append(score1str).toString():score1str;
+				
+//				if ("NA".equalsIgnoreCase(score0str)) {
+//					score0str = "-1";
+//				}
+//				if ("NA".equalsIgnoreCase(score1str)) {
+//					score1str = "-1";
+//				}
+// 				
+//				Integer score0 = -1;
+//				try {
+//					 score0 = Integer.parseInt(score0str);
+//				} catch (Exception e) {
+//					score0 = -1;
+//				}
+//
+//				Integer score1 = -1;
+//				try {
+//					score1 = Integer.parseInt(score1str);
+//				} catch (Exception e) {
+//					score1 = -1;
+//				}
+//				
+				
+				return score0.compareTo(score1);
+			}
+			   
+		    });
+		   
 		  for (Answer answer: answers) {
 			  String title = answer.title;
 			  if (StringUtils.isNotBlank(title)) {
