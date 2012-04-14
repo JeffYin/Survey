@@ -6,9 +6,12 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
@@ -21,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.axis.ValueAxis;
@@ -31,7 +33,6 @@ import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.UnknownKeyException;
@@ -76,7 +77,7 @@ public class Surveys extends CRUD{
   }
   
   public static String getTextAnswers(Long surveyId, Long questionId) {
-	  List<Answer> answers = Answer.find("survey.id = ? and question.id = ? ", surveyId, questionId).fetch();
+	  List<Answer> answers = Answer.find("survey.id = ? and question.id = ? order by title", surveyId, questionId).fetch();
 	  StringBuilder info = new StringBuilder();
 	  
 	  for (Answer answer: answers) {
@@ -89,6 +90,26 @@ public class Surveys extends CRUD{
 	  return info.toString();
   }
  
+  
+  /**
+   * Get the summary in the text format. 
+   * @param surveyId
+   * @param questionId
+   * @return
+   */
+  public static String getTextSummary(Long surveyId, Long questionId) {
+	Map<String, Integer> summaryMap = createAnswerSummary(surveyId, questionId);
+	List<String> info = new ArrayList<String>(summaryMap.size());  
+	
+	for (Map.Entry<String, Integer> entry : summaryMap.entrySet()) {
+		info.add(String.format("%s:%d votes", entry.getKey(), entry.getValue()));
+	}
+	
+	String summary = StringUtils.join(info, ",");
+	
+	return summary;
+  }
+  
   public static void drawPIChart(Long surveyId, Long questionId) {
 	  Survey survey = Survey.findById(surveyId);
 	  Question question = Question.findById(questionId);
@@ -182,53 +203,72 @@ public class Surveys extends CRUD{
    * @return A sample dataset.
    */
   private static PieDataset createPIDataset(Survey survey, Question question) {
-	  final DefaultPieDataset result = new DefaultPieDataset();
-	  List<Answer> answers = Answer.find("survey = ? and question = ? ", survey, question).fetch();
 	  
-	  for (Answer answer: answers) {
-		  String title = answer.title;
-		  if (StringUtils.isNotBlank(title)) {
-			  Integer voteNumber = 0;
-			  try {
-				   voteNumber = (Integer) result.getValue(title);
-			  } catch (UnknownKeyException e) {
-				   
-			  }
-			   voteNumber = voteNumber + 1;
-			 
-			  result.setValue(title, voteNumber);
-		  }
+	  final DefaultPieDataset result = new DefaultPieDataset();
+	  Map<String, Integer> answersMap = createAnswerSummary(survey, question);
+	  
+	  for (Map.Entry<String, Integer> entry :answersMap.entrySet()) {
+		  result.setValue(entry.getKey(), entry.getValue());
 	  }
+	  
+//	  for (Answer answer: answers) {
+//		  String title = answer.title;
+//		  if (StringUtils.isNotBlank(title)) {
+//			  Integer voteNumber = 0;
+//			  try {
+//				   voteNumber = (Integer) result.getValue(title);
+//			  } catch (UnknownKeyException e) {
+//				   
+//			  }
+//			   voteNumber = voteNumber + 1;
+//			 
+//			  result.setValue(title, voteNumber);
+//		  }
+//	  }
 	 
       return result;
   }
-
+  
+  
+  
+  private static Map<String, Integer> createAnswerSummary(Long surveyId, Long questionId) {
+	  Survey survey = Survey.findById(surveyId);
+	  Question question = Question.findById(questionId);
+	  return createAnswerSummary(survey, question);
+  }
+  private static Map<String, Integer> createAnswerSummary(Survey survey, Question question) {
+	  Map<String,Integer> result = new TreeMap<String, Integer>();
+	  if (survey!=null && question!=null) {
+		   List<Answer> answers = Answer.find("survey = ? and question = ? order by title", survey, question).fetch();
+			  
+		  for (Answer answer: answers) {
+			  String title = answer.title;
+			  if (StringUtils.isNotBlank(title)) {
+				  Integer voteNumber = result.get(title);
+				  if (voteNumber==null) {
+					  voteNumber = new Integer(1);
+				  } else {
+				       voteNumber = new Integer(voteNumber.intValue() + 1);
+				  }
+				  
+				  result.put(title, voteNumber);
+			  }
+		  }
+	  }
+	  //*/
+	  return result; 
+  }
   /**
    * Creates a bar dataset for the chart.
    * 
    * @return A sample dataset.
    */
   private static CategoryDataset createBarDataset(Survey survey, Question question) {
-	  
-	  List<Answer> answers = Answer.find("survey = ? and question = ? ", survey, question).fetch();
-	  Map<String, Integer> counterMap = new HashMap<String, Integer>(answers==null?0:answers.size());
-	  
-	  for (Answer answer: answers) {
-		  String title = answer.title;
-		  Integer voteNumber = counterMap.get(title);
-		  if (voteNumber==null) {
-			  voteNumber = 0;
-		  }
-		  voteNumber++;
-		  counterMap.put(title, voteNumber);
-	  }
-		  
 	  final DefaultCategoryDataset result = new DefaultCategoryDataset();
-	  for (Map.Entry<String, Integer>entry: counterMap.entrySet()) {
-		String rowKey =  entry.getKey();
-		if (StringUtils.isNotBlank(rowKey)) {
-			result.setValue(entry.getValue(), rowKey, question.title);
-		}
+	  Map<String, Integer> answersMap = createAnswerSummary(survey, question);
+	  
+	  for (Map.Entry<String, Integer> entry :answersMap.entrySet()) {
+		  result.setValue(entry.getValue(), entry.getKey(), question.title);
 	  }
 	  
 	  return result;
@@ -253,7 +293,7 @@ public class Surveys extends CRUD{
 
       final PiePlot plot = (PiePlot) chart.getPlot();
       
-      plot.setStartAngle(90);
+      plot.setStartAngle(-90);
       plot.setDirection(Rotation.CLOCKWISE);
       plot.setForegroundAlpha(1f);
       plot.setBackgroundPaint(Color.white);
