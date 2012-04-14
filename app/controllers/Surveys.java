@@ -81,7 +81,9 @@ public class Surveys extends CRUD{
 	  
 	  for (Answer answer: answers) {
 		  String title = answer.title;
-		  info.append(title).append("; ");
+		  if (StringUtils.isNotBlank(title)) {
+			  info.append(title).append("<br>");
+		  }
 	  }
 	  
 	  return info.toString();
@@ -133,7 +135,7 @@ public class Surveys extends CRUD{
       final PieDataset dataset = createPIDataset(survey, question);
       String title = question.title;
       // create the chart...
-      final JFreeChart chart = createPIChart(dataset, title);
+      final JFreeChart chart = createPIChart(dataset, "");
       BufferedImage bufferedImage = chart.createBufferedImage(ImageWidth, ImageHeight);
       
       /*
@@ -253,11 +255,19 @@ public class Surveys extends CRUD{
       
       plot.setStartAngle(90);
       plot.setDirection(Rotation.CLOCKWISE);
-      plot.setForegroundAlpha(0.5f);
+      plot.setForegroundAlpha(1f);
       plot.setBackgroundPaint(Color.white);
       plot.setNoDataMessage("No data to display");
       
-      //configFont(chart);
+      List keyList = dataset.getKeys();
+      if (keyList!=null) {
+    	  int maxNum = dataset.getKeys().size();
+    	  for (int i=0;i<maxNum-1; i++) {
+    		  plot.setExplodePercent(dataset.getKey(i), 0.1d);
+    	  }
+      }
+      
+      configPIFont(chart);
       return chart;
       
   }
@@ -296,8 +306,7 @@ public class Surveys extends CRUD{
 	  render.setItemLabelAnchorOffset(10D);
 	  
 	  render.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
-	  render.setItemLabelAnchorOffset(10D);
-	  
+	  render.setItemLabelAnchorOffset(2D);
 	  
 
 	  NumberAxis   yAxis   =   (NumberAxis)plot.getRangeAxis();
@@ -309,7 +318,7 @@ public class Surveys extends CRUD{
 	  xAxis.setAxisLineVisible(false);
 	  
 	  plot.setRenderer(render);
-	  configFont(chart);
+	  configBarFont(chart);
 	  return chart;
 	  
   }
@@ -319,13 +328,14 @@ public class Surveys extends CRUD{
    * 配置字体 
    * @param chart JFreeChart 对象
    */
-  private static void configFont(JFreeChart chart){
+  private static void configBarFont(JFreeChart chart){
   	// 配置字体
   	Font xfont = new Font("宋体",Font.PLAIN,12) ;// X轴
   	Font yfont = new Font("宋体",Font.PLAIN,12) ;// Y轴
   	Font kfont = new Font("宋体",Font.PLAIN,12) ;// 底部
   	Font titleFont = new Font("隶书", Font.BOLD , 25) ; // 图片标题
   	CategoryPlot plot = chart.getCategoryPlot();// 图形的绘制结构对象
+  	
   	
   	// 图片标题
   	chart.setTitle(new TextTitle(chart.getTitle().getText(),titleFont));
@@ -346,5 +356,27 @@ public class Surveys extends CRUD{
       rangeAxis.setLabelPaint(Color.BLUE) ; // 字体颜色
       rangeAxis.setTickLabelFont(yfont);  
       
+  }
+
+  /**
+   * 配置字体 
+   * @param chart JFreeChart 对象
+   */
+  private static void configPIFont(JFreeChart chart){
+	  // 配置字体
+	  Font xfont = new Font("宋体",Font.PLAIN,12) ;// X轴
+	  Font yfont = new Font("宋体",Font.PLAIN,12) ;// Y轴
+	  Font kfont = new Font("宋体",Font.PLAIN,12) ;// 底部
+	  Font titleFont = new Font("隶书", Font.BOLD , 25) ; // 图片标题
+	  PiePlot plot = (PiePlot) chart.getPlot();// 图形的绘制结构对象
+	  
+	  
+	  // 图片标题
+	  chart.setTitle(new TextTitle(chart.getTitle().getText(),titleFont));
+	  
+	  // 底部
+	  chart.getLegend().setItemFont(kfont);
+	  
+	  
   }
 }
